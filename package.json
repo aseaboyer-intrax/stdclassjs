@@ -1,0 +1,23 @@
+{
+  "name": "StdClassJS",
+  "version": "0.1.0",
+  "description": "A dead simple base class providing two self propagating static methods, extend and mixin.",
+  "main": "stdclass.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/BlueJeansAndRain/stdclassjs.git"
+  },
+  "keywords": [
+    "oop",
+    "class",
+    "extend",
+    "mixin"
+  ],
+  "author": "BlueJeansAndRain <bluejeansandrain@gmail.com> (http://parallelnoodles.com/)",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "gitHead": "58462cb306016aefa9c4c5dc6b0e2bcd183e6f92"
+}

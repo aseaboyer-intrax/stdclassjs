@@ -49,7 +49,7 @@ The StdClass constructor has three static methods that do all the magic.
     * Attaches the `extend` and `extendProto` methods to the constructor which can then be used to extend the class.
     * Useful for adding StdClass inheritance to classes that cannot directly inherit from StdClass.
 
-The `extend` and `extendProto` static methods are also copied to child classes so that children can be re-extended in turn.
+The `extend` and `extendProto` static methods are also copied to child classes so that children can be re-extended in turn. The `mixin` method is _not_ copied by either `mixin` or `extend`; however, it can be manually copied should you want to extend the functionality of StdClass itself.
 
     // Parent class
     var MyParent = StdClass.extend( function( args, go, here )

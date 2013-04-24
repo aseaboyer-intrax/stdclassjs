@@ -23,7 +23,11 @@
 		Super.prototype = this.prototype;
 		ctor.prototype = new Super();
 		ctor.prototype.constructor = ctor;
-		StdClass.mixin( ctor );
+
+		if ( this.hasOwnProperty( 'mixin' ) && this.mixin instanceof Function )
+			this.mixin( ctor );
+		else
+			StdClass.mixin( ctor );
 
 		return ctor;
 	};
@@ -55,8 +59,10 @@
 		if ( !( ctor instanceof Function ) )
 			throw new Error( "Expecting function" );
 
-		ctor.extend = this.extend;
-		ctor.extendProto = this.extendProto;
+		if ( this.hasOwnProperty( 'extend' ) && this.extend instanceof Function )
+			ctor.extend = this.extend;
+		if ( this.hasOwnProperty( 'extendProto' ) && this.extendProto instanceof Function )
+			ctor.extendProto = this.extendProto;
 
 		return ctor;
 	};

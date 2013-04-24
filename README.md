@@ -45,19 +45,19 @@ API
 
 StdClass has three static methods that do all the magic.
 
-* `extend`
+* `extend( [ Function constructor ] )`
     * Creates a child class that inherits from the constructor that extend is being statically called on.
     * Takes an optional constructor function as an argument.
     * If no argument is given, then the parent constructor will be inherited.
-    * Calls mixin to add `extend` and `implement` static methods to the new child class.
+    * Calls mixin to copy the `extend` and `implement` static methods to the new child class.
     * Returns the constructor.
-* `implement`
+* `implement( [ Object, ... ] )`
     * Add properties to the class prototype.
     * _All_ non-null/non-undefined properties on _all_ objects passed to implement will be added to the class constructor prototype.
     * Takes 0 or more objects as arguments.
         * Passing no objects is silly, but allowed.
     * Returns the constructor.
-* `mixin`
+* `mixin( Function constructor )`
     * Takes a required constructor function argument.
     * Attaches the `extend` and `implement` static methods which can then be used to extend the class.
     * Useful for adding StdClass inheritance to classes that cannot directly inherit from StdClass.

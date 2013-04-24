@@ -3,25 +3,37 @@ StdClassJS
 
 A dead simple JavaScript inheritance implementation.
 
-Including
----------
+Node
+----
 
-### Node
+_Install With NPM_
 
+    $ npm install stdclass
+
+_Unit Testing (optional)_
+
+    $ npm install --dev stdclass
+    $ npm test stdclass
+
+_Require It_
+
+    #!/usr/bin/env node
     var StdClass = require( 'stdclass' );
 
-### Browser
+Browser
+-------
 
     <script src="/path/to/stdclass.js"></script>
 
-### Alternatively
+Inline
+------
 
-Feel free to copy the source between `/* BEGIN CLASS: StdClass */` and `/* END CLASS: StdClass */` into your own source. It's tiny. Remember to include the license.
+Feel free to copy the source between `/* BEGIN CLASS: StdClass */` and `/* END CLASS: StdClass */` into your own project. Remember to include the license.
 
 Usage
 -----
 
-The StdClass constructor has two static methods with do all the magic.
+The StdClass constructor has two static methods that do all the magic.
 
 * `extend`
     * takes an optional constructor function as an argument.
@@ -71,9 +83,10 @@ The `extend` and `mixin` static methods are also copied to child classes so that
         }
     });
 
+    // No explicit constructor means inherit the parent constructor.
     var InheritedConstructor = MyChild.extend();
 
-    // Extend with multiple arguments.
+    // Mixin with multiple arguments
     InheritedConstructor.mixin(
         {
             foo: 'foo', // Replaced below

@@ -33,7 +33,7 @@ Feel free to copy the source between `/* BEGIN CLASS: StdClass */` and `/* END C
 Usage
 -----
 
-The StdClass constructor has three static methods that do all the magic.
+StdClass has three static methods that do all the magic.
 
 * `extend`
     * takes an optional constructor function as an argument.
@@ -45,9 +45,10 @@ The StdClass constructor has three static methods that do all the magic.
     * _All_ non-null/non-undefined properties on _all_ objects passed to extendProto will be added to the class constructor prototype.
     * Returns the constructor.
 * `mixin`
-    * Takes a constructor function argument.
-    * Attaches the `extend` and `extendProto` methods to the constructor which can then be used to extend the class.
+    * Takes a required constructor function argument.
+    * Attaches the `extend` and `extendProto` static methods which can then be used to extend the class.
     * Useful for adding StdClass inheritance to classes that cannot directly inherit from StdClass.
+    * Returns the constructor.
 
 The `extend` and `extendProto` static methods are also copied to child classes so that children can be re-extended in turn. The `mixin` method is _not_ copied by either `mixin` or `extend`; however, it can be manually copied should you want to extend the functionality of StdClass itself.
 

@@ -16,19 +16,18 @@
 		}
 		else if ( !( ctor instanceof Function ) )
 		{
-			throw new Error( "Constructor must be a function" );
+			throw new Error( "Expecting function" );
 		}
 
 		function Super() {}
 		Super.prototype = this.prototype;
 		ctor.prototype = new Super();
 		ctor.prototype.constructor = ctor;
-		ctor.extend = this.extend;
-		ctor.mixin = this.mixin;
+		StdClass.mixin( ctor );
 
 		return ctor;
 	};
-	StdClass.mixin = function( /* ... */ )
+	StdClass.extendProto = function( /* ... */ )
 	{
 		var i = 0,
 			i_max = arguments.length,
@@ -50,6 +49,16 @@
 		}
 
 		return this;
+	};
+	StdClass.mixin = function( ctor )
+	{
+		if ( !( ctor instanceof Function ) )
+			throw new Error( "Expecting function" );
+
+		ctor.extend = this.extend;
+		ctor.extendProto = this.extendProto;
+
+		return ctor;
 	};
 /* END CLASS: StdClass */
 

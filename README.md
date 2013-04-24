@@ -33,26 +33,30 @@ Feel free to copy the source between `/* BEGIN CLASS: StdClass */` and `/* END C
 Usage
 -----
 
-The StdClass constructor has two static methods that do all the magic.
+The StdClass constructor has three static methods that do all the magic.
 
 * `extend`
     * takes an optional constructor function as an argument.
     * If no argument is given, then the parent constructor will be inherited.
     * Returns the constructor.
-* `mixin`
+* `extendProto`
     * Takes 0 or more objects as arguments.
         * Passing no objects is silly, but allowed.
-    * _All_ non-null/non-undefined properties on _all_ objects passed to mixin will be added to the class constructor prototype.
+    * _All_ non-null/non-undefined properties on _all_ objects passed to extendProto will be added to the class constructor prototype.
     * Returns the constructor.
+* `mixin`
+    * Takes a constructor function argument.
+    * Attaches the `extend` and `extendProto` methods to the constructor which can then be used to extend the class.
+    * Useful for adding StdClass inheritance to classes that cannot directly inherit from StdClass.
 
-The `extend` and `mixin` static methods are also copied to child classes so that children can be re-extended in turn.
+The `extend` and `extendProto` static methods are also copied to child classes so that children can be re-extended in turn.
 
     // Parent class
     var MyParent = StdClass.extend( function( args, go, here )
     {
         // Do parent constructor stuff
     })
-    .mixin({
+    .extendProto({
         instanceMethod: function( and, here )
         {
             // Do method stuff
@@ -68,7 +72,7 @@ The `extend` and `mixin` static methods are also copied to child classes so that
         // Do child constructor stuff
         this.too = too;
     })
-    .mixin({
+    .extendProto({
         instanceMethod: function( and, here, too )
         {
             // Call the parent method
@@ -86,8 +90,8 @@ The `extend` and `mixin` static methods are also copied to child classes so that
     // No explicit constructor means inherit the parent constructor.
     var InheritedConstructor = MyChild.extend();
 
-    // Mixin with multiple arguments
-    InheritedConstructor.mixin(
+    // extendProto with multiple arguments
+    InheritedConstructor.extendProto(
         {
             foo: 'foo', // Replaced below
             bar: 'bar', // Not replaced below
@@ -97,6 +101,18 @@ The `extend` and `mixin` static methods are also copied to child classes so that
             bar: null // Does not replace above 'bar' value
         }
     )
+
+    var DumbClass = function()
+    {
+        // Assume this is somebody elses class that you've included in your
+        // project. It doesn't have any built in way of extending it! You'll
+        // have to do it the old fashioned way... or will you?
+    };
+
+    StdClass.mixin( DumbClass );
+
+    // Woot!
+    var NotSoDumbClass = DumbClass.extend();
 
 License
 -------

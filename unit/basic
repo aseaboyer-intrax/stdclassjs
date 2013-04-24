@@ -1,0 +1,203 @@
+"use strict";
+
+var StdClass = require( '../stdclass.js' );
+
+exports.extend = function( test )
+{
+	test.expect( 4 );
+
+	var ctor = function() {};
+	var MyClass = StdClass.extend( ctor );
+
+	test.ok( MyClass === ctor, "constructor not returned by extend" );
+	test.ok( MyClass.prototype.constructor === ctor, "prototype.constructor not set" );
+	test.ok( MyClass.extend === StdClass.extend, "extend was not propagated" );
+	test.ok( MyClass.mixin === StdClass.mixin, "mixin was not propagated" );
+
+	test.done();
+};
+
+exports.create_instance = function( test )
+{
+	test.expect( 2 );
+
+	var MyClass = StdClass.extend( function()
+	{
+		this.success = true;
+	});
+
+	var instance = new MyClass();
+
+	test.ok( instance instanceof StdClass, "Not a StdClass instance" );
+	test.ok( instance.success === true, "Constructor not called" );
+
+	test.done();
+};
+
+exports.inherit_constructor = function( test )
+{
+	test.expect( 1 );
+
+	var MyClass = StdClass.extend( function()
+	{
+		this.success = true;
+	});
+
+	var MySecondClass = MyClass.extend();
+
+	var instance = new MySecondClass();
+	test.ok( instance.success === true, "Parent constructor was not inherited" );
+
+	test.done();
+};
+
+exports.mixin = function( test )
+{
+	test.expect( 6 );
+
+	var MyClass = StdClass.extend().mixin({
+		foo: function()
+		{
+			return 'foo';
+		},
+		bar: function()
+		{
+			return 'bar';
+		}
+	});
+
+	var instance = new MyClass();
+
+	test.ok( MyClass.prototype.hasOwnProperty( 'foo' ), "Mixin property missing" );
+	test.ok( MyClass.prototype.hasOwnProperty( 'bar' ), "Mixin property missing" );
+	test.ok( MyClass.prototype.foo instanceof Function, "Expected function" );
+	test.ok( MyClass.prototype.bar instanceof Function, "Expected function" );
+	test.ok( instance.foo() === 'foo', "Wrong method called" );
+	test.ok( instance.bar() === 'bar', "Wrong method called" );
+
+	test.done();
+};
+
+exports.mixin_multiples = function( test )
+{
+	var undef;
+
+	var MyClass = StdClass.extend().mixin(
+		{
+			foo: 'a',
+			keep1: 'b',
+			keep2: 'c',
+			keep3: 'd'
+		},
+		{
+			foo: 'e',
+			bar: 'f',
+			keep1: undef
+		},
+		{
+			bar: 'g',
+			keep2: null
+		}
+	);
+
+	test.ok( MyClass.prototype.foo === 'e' );
+	test.ok( MyClass.prototype.bar === 'g' );
+	test.ok( MyClass.prototype.keep1 === 'b' );
+	test.ok( MyClass.prototype.keep2 === 'c' );
+	test.ok( MyClass.prototype.keep3 === 'd' );
+
+	test.done();
+};
+
+exports.second_generation = function( test )
+{
+	test.expect( 8 );
+
+	var MyClass = StdClass.extend( function()
+	{
+		this.MyClass_success = true;
+	})
+	.mixin({
+		foo: function()
+		{
+			return 'foo';
+		}
+	});
+
+	var MySecondClass = MyClass.extend( function()
+	{
+		MyClass.call( this );
+
+		this.MySecondClass_success = true;
+	})
+	.mixin({
+		foo: function()
+		{
+			return MyClass.prototype.foo.call() + '2';
+		},
+		bar: function()
+		{
+			return 'bar';
+		}
+	});
+
+	var instance1 = new MyClass(),
+		instance2 = new MySecondClass();
+
+	test.ok( instance1 instanceof MyClass, "Parent class not instance of parent class" );
+	test.ok( !( instance1 instanceof MySecondClass ), "Parent class is instanceof child class" );
+	test.ok( instance1.foo() === 'foo', "Wrong method called" );
+	test.throws( function()
+	{
+		instance1.bar();
+	});
+
+	test.ok( instance2 instanceof MyClass, "Child class not instance of parent class" );
+	test.ok( instance2 instanceof MySecondClass, "Child class not instance of child class" );
+	test.ok( instance2.foo() === 'foo2', "Super method not called" );
+	test.ok( instance2.bar() === 'bar', "Wrong method called" );
+
+	test.done();
+};
+
+exports.late_prototype_modification = function( test )
+{
+	test.expect( 7 );
+
+	var MyClass = StdClass.extend( function() {} ),
+		MySecondClass = MyClass.extend( function() {} ),
+		instance1 = new MyClass(),
+		instance2 = new MySecondClass();
+
+	MyClass.prototype.foo = function()
+	{
+		return 'foo';
+	};
+
+	MySecondClass.prototype.bar = function()
+	{
+		return 'bar';
+	};
+
+	test.doesNotThrow( function()
+	{
+		test.ok( instance1.foo() === 'foo', "Wrong method called" );
+	}, Error, "Late prototype modification of parent had no effect" );
+
+	test.throws( function()
+	{
+		instance1.bar();
+	}, Error, "Child prototype change affected parent" );
+
+	test.doesNotThrow( function()
+	{
+		test.ok( instance2.foo() === 'foo', "Wrong method called" );
+	}, Error, "Parent prototype change did not affect child" );
+
+	test.doesNotThrow( function()
+	{
+		test.ok( instance2.bar() === 'bar', "Wrong method called" );
+	}, Error, "Late prototype modification of child had no effect" );
+
+	test.done();
+};

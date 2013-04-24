@@ -5,8 +5,18 @@ A dead simple JavaScript inheritance implementation.
 
 Inheritance is done exactly the same way it would be done manually so instanceof will still work and there is no speed reduction. It's all just wrapped up in some helper methods so the repetative boilerplate can be avoided.
 
-Node
-----
+It Does Not...
+--------------
+
+* Do multiple inheritance
+* Add _super/_superApply methods
+* Use Object.create or anything that is only in ECMAScript "newer than you can use" Edition.
+* Juggle
+
+You Can...
+----------
+
+### Use It With Node
 
 _Install With NPM_
 
@@ -22,18 +32,16 @@ _Require It_
     #!/usr/bin/env node
     var StdClass = require( 'stdclass' );
 
-Browser
--------
+### Use It In The Browser
 
     <script src="/path/to/stdclass.js"></script>
 
-Inline
-------
+### Use It Inline
 
 Feel free to copy the source between `/* BEGIN CLASS: StdClass */` and `/* END CLASS: StdClass */` into your own project. Remember to include the license.
 
-Usage
------
+API
+---
 
 StdClass has three static methods that do all the magic.
 
@@ -56,6 +64,9 @@ StdClass has three static methods that do all the magic.
     * Returns the constructor.
 
 The `mixin` method is _not_ copied by either `mixin` or `extend`; however, it can be manually copied should you want to extend the functionality of StdClass itself.
+
+Examples
+--------
 
     // Parent class
     var MyParent = StdClass.extend( function( args, go, here )

@@ -3,6 +3,8 @@ StdClassJS
 
 A dead simple JavaScript inheritance implementation.
 
+Inheritance is done exactly the same way it would be done manually so instanceof will still work and there is no speed reduction. It's all just wrapped up in some helper methods so the repetative boilerplate can be avoided.
+
 Node
 ----
 
@@ -36,19 +38,20 @@ Usage
 StdClass has three static methods that do all the magic.
 
 * `extend`
+    * Creates a child class that inherits from the constructor that extend is being statically called on.
     * Takes an optional constructor function as an argument.
     * If no argument is given, then the parent constructor will be inherited.
-    * Creates a child class that inherits from the constructor that extend is being statically called on.
-    * Calls mixin to add `extend` and `extendProto` static methods to the new child class.
+    * Calls mixin to add `extend` and `implement` static methods to the new child class.
     * Returns the constructor.
-* `extendProto`
+* `implement`
+    * Add properties to the class prototype.
+    * _All_ non-null/non-undefined properties on _all_ objects passed to implement will be added to the class constructor prototype.
     * Takes 0 or more objects as arguments.
         * Passing no objects is silly, but allowed.
-    * _All_ non-null/non-undefined properties on _all_ objects passed to extendProto will be added to the class constructor prototype.
     * Returns the constructor.
 * `mixin`
     * Takes a required constructor function argument.
-    * Attaches the `extend` and `extendProto` static methods which can then be used to extend the class.
+    * Attaches the `extend` and `implement` static methods which can then be used to extend the class.
     * Useful for adding StdClass inheritance to classes that cannot directly inherit from StdClass.
     * Returns the constructor.
 
@@ -59,7 +62,7 @@ The `mixin` method is _not_ copied by either `mixin` or `extend`; however, it ca
     {
         // Do parent constructor stuff
     })
-    .extendProto({
+    .implement({
         instanceMethod: function( and, here )
         {
             // Do method stuff
@@ -75,7 +78,7 @@ The `mixin` method is _not_ copied by either `mixin` or `extend`; however, it ca
         // Do child constructor stuff
         this.too = too;
     })
-    .extendProto({
+    .implement({
         instanceMethod: function( and, here, too )
         {
             // Call the parent method
@@ -93,8 +96,8 @@ The `mixin` method is _not_ copied by either `mixin` or `extend`; however, it ca
     // No explicit constructor means inherit the parent constructor.
     var InheritedConstructor = MyChild.extend();
 
-    // extendProto with multiple arguments
-    InheritedConstructor.extendProto(
+    // implement with multiple arguments
+    InheritedConstructor.implement(
         {
             foo: 'foo', // Replaced below
             bar: 'bar', // Not replaced below

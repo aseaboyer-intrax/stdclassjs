@@ -9,7 +9,7 @@ exports.mixin = function( test )
 
 	test.ok( returned === MyClass, "mixin did not return the constructor" );
 	test.ok( MyClass.extend === StdClass.extend, "extend not copied"  );
-	test.ok( MyClass.extendProto === StdClass.extendProto, "extendProto not copied" );
+	test.ok( MyClass.implement === StdClass.implement, "implement not copied" );
 	test.ok( MyClass.mixin !== StdClass.mixin, "mixin copied" );
 
 	test.done();
@@ -25,7 +25,7 @@ exports.extend = function( test )
 	test.ok( MyClass === ctor, "constructor not returned by extend" );
 	test.ok( MyClass.prototype.constructor === ctor, "prototype.constructor not set" );
 	test.ok( MyClass.extend === StdClass.extend, "extend was not propagated" );
-	test.ok( MyClass.extendProto === StdClass.extendProto, "extendProto was not propagated" );
+	test.ok( MyClass.implement === StdClass.implement, "implement was not propagated" );
 
 	test.done();
 };
@@ -64,11 +64,11 @@ exports.inherit_constructor = function( test )
 	test.done();
 };
 
-exports.extendProto = function( test )
+exports.implement = function( test )
 {
 	test.expect( 6 );
 
-	var MyClass = StdClass.extend().extendProto({
+	var MyClass = StdClass.extend().implement({
 		foo: function()
 		{
 			return 'foo';
@@ -91,11 +91,11 @@ exports.extendProto = function( test )
 	test.done();
 };
 
-exports.extendProto_multiples = function( test )
+exports.implement_multiples = function( test )
 {
 	var undef;
 
-	var MyClass = StdClass.extend().extendProto(
+	var MyClass = StdClass.extend().implement(
 		{
 			foo: 'a',
 			keep1: 'b',
@@ -130,7 +130,7 @@ exports.second_generation = function( test )
 	{
 		this.MyClass_success = true;
 	})
-	.extendProto({
+	.implement({
 		foo: function()
 		{
 			return 'foo';
@@ -143,7 +143,7 @@ exports.second_generation = function( test )
 
 		this.MySecondClass_success = true;
 	})
-	.extendProto({
+	.implement({
 		foo: function()
 		{
 			return MyClass.prototype.foo.call() + '2';

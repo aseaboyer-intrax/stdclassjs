@@ -31,7 +31,7 @@
 
 		return ctor;
 	};
-	StdClass.extendProto = function( /* ... */ )
+	StdClass.implement = function( /* ... */ )
 	{
 		var i = 0,
 			i_max = arguments.length,
@@ -64,10 +64,10 @@
 		else
 			ctor.extend = StdClass.extend;
 
-		if ( !!( this.extendProto && this.extendProto.constructor && this.extendProto.call && this.extendProto.apply ) )
-			ctor.extendProto = this.extendProto;
+		if ( !!( this.implement && this.implement.constructor && this.implement.call && this.implement.apply ) )
+			ctor.implement = this.implement;
 		else
-			ctor.extendProto = StdClass.extendProto;
+			ctor.implement = StdClass.implement;
 
 		return ctor;
 	};

@@ -14,7 +14,7 @@
 				return SuperConstructor.apply( this, arguments );
 			};
 		}
-		else if ( !( ctor instanceof Function ) )
+		else if ( !( ctor && ctor.constructor && ctor.call && ctor.apply ) )
 		{
 			throw new Error( "Expecting function" );
 		}
@@ -24,7 +24,7 @@
 		ctor.prototype = new Super();
 		ctor.prototype.constructor = ctor;
 
-		if ( this.hasOwnProperty( 'mixin' ) && this.mixin instanceof Function )
+		if ( !!( this.mixin && this.mixin.constructor && this.mixin.call && this.mixin.apply ) )
 			this.mixin( ctor );
 		else
 			StdClass.mixin( ctor );
@@ -56,13 +56,18 @@
 	};
 	StdClass.mixin = function( ctor )
 	{
-		if ( !( ctor instanceof Function ) )
+		if ( !( ctor && ctor.constructor && ctor.call && ctor.apply ) )
 			throw new Error( "Expecting function" );
 
-		if ( this.hasOwnProperty( 'extend' ) && this.extend instanceof Function )
+		if ( !!( this.extend && this.extend.constructor && this.extend.call && this.extend.apply ) )
 			ctor.extend = this.extend;
-		if ( this.hasOwnProperty( 'extendProto' ) && this.extendProto instanceof Function )
+		else
+			ctor.extend = StdClass.extend;
+
+		if ( !!( this.extendProto && this.extendProto.constructor && this.extendProto.call && this.extendProto.apply ) )
 			ctor.extendProto = this.extendProto;
+		else
+			ctor.extendProto = StdClass.extendProto;
 
 		return ctor;
 	};

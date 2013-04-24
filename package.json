@@ -1,5 +1,5 @@
 {
-  "name": "StdClassJS",
+  "name": "stdclass",
   "version": "0.1.0",
   "description": "A dead simple base class providing two self propagating static methods, extend and mixin.",
   "main": "stdclass.js",

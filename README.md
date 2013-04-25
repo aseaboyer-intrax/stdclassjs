@@ -60,14 +60,14 @@ API
 StdClass and any derivative constructors it creates, have the following static methods that do all the magic.
 
 * `extend( [ Function constructor ] )`
-    * Creates a child class that inherits from the constructor that extend is being statically called on.
+    * Creates a child class of the constructor it is attached to.
     * Takes an optional constructor function as an argument.
         * If no argument is given, then the parent constructor will be inherited. See the examples section if you're not sure what that means.
         * Useful when you just want to create a child with overridden methods.
     * Copies `extend`, `implement`, `neo`, and `cleanupClassHelpers` static methods to the new child class.
     * Returns the constructor it's attached to.
 * `implement( [ Object, ... ] )`
-    * Add properties to the class prototype.
+    * Add properties to the prototype of the constructor it is attached to.
     * _All_ non-null/non-undefined properties on _all_ objects passed to implement will be added to the class constructor prototype.
     * Takes 0 or more objects as arguments.
         * Passing no objects is silly, but allowed.
@@ -79,8 +79,9 @@ StdClass and any derivative constructors it creates, have the following static m
     * _Does_ introduce a teeeeensy bit of overhead. I mean really teensy. Statistically insignificant.
     * Returns a new instance of the constructor it's attached to.
 * `cleanupClassHelpers()`
-    * Removes `extend`, `implement`, `neo`, and itself from the class.
-    * This name intentionally left long to stay out of the way and because it's just here for completeness sake and I don't expect many people to use it.
+    * Removes `extend`, `implement`, `neo`, and itself from the constructor it is attached to.
+    * Will _only_ remove these properties if the are strictly equal to the original methods on StdClass.
+    * This name is intentionally long to stay out of the way and because it's just here for completeness sake. No overhead should be added by leaving the tools in place.
     * This does _not_ affect the prototype, so any derivatives that have already been created will also be un-affected.
     * Returns the constructor it _was_ attached to.
 
@@ -89,7 +90,7 @@ StdClass also has the following static method which it _does not_ pass along to 
 * `StdClass.mixin( [ true, ] Function constructor )`
     * Takes a required constructor function argument.
     * Attaches the `extend`, `implement`, `neo`, and `cleanupClassHelpers` static methods to constructors that were not created by StdClass.
-    * Useful for adding StdClass inheritance to classes that cannot directly inherit from StdClass.
+    * Useful for adding StdClass tools to classes that cannot directly inherit from StdClass.
     * Also returns the constructor it's attached to, just in case you want to attach it to something else.
 
 _All_ of the above methods are completely portable. You can attach any of them to any function and they will just work.

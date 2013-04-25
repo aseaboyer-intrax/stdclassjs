@@ -215,7 +215,7 @@ The hallmark of a framework is Inversion of Control. It _looks_ like there's som
 
 Inheriting from StdClass is completely optional and is simply an alternative to the `StdClass.mixin` method. StdClass is not a template or abstract class, and therefore does not use any dependency injection. In fact, it does not have any instance methods at all.
 
-The `neo` method also does not really create a factory pattern since the instance it returns is of the class it's statically attached to. AKA: `neo` returns a concrete class, never a derivative. This can get very confusing very fast, but the bottom line is there's nothing abstract about it, and therefore it's not a factory pattern.
+The `neo` method also does not really create a factory pattern since the instance it returns is of the class it's statically attached to. There's nothing abstract about it, and therefore it's not a factory pattern.
 
 Just in case library status is still in doubt, `mixin` and `cleanupClassMethods` are provided so that the utility methods can be added and removed from existing classes without side effects. This makes it sort of a persistant toolkit if anything ;).
 

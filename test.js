@@ -6,7 +6,7 @@ var StdClass = require( './stdclass.js' );
 
 exports.mixin = function( test )
 {
-	test.expect( 6 );
+	test.expect( 5 );
 
 	var MyClass = function() {};
 
@@ -14,23 +14,21 @@ exports.mixin = function( test )
 	test.ok( MyClass.extend === StdClass.extend, "extend not copied"  );
 	test.ok( MyClass.implement === StdClass.implement, "implement not copied" );
 	test.ok( MyClass.neo === StdClass.neo, "neo not copied" );
-	test.ok( MyClass.cleanupClassHelpers === StdClass.cleanupClassHelpers, "cleanupClassHelpers not copied" );
 	test.ok( MyClass.mixin !== StdClass.mixin, "mixin copied" );
 
 	test.done();
 };
 
-exports.cleanupClassHelpers = function( test )
+exports.cleanup = function( test )
 {
-	test.expect( 5 );
+	test.expect( 4 );
 
 	var MyClass = StdClass.extend();
 
-	test.ok( MyClass.cleanupClassHelpers() === MyClass, "constructor not returned" );
+	test.ok( StdClass.cleanup( MyClass ) === MyClass, "constructor not returned" );
 	test.ok( !MyClass.hasOwnProperty( 'extend' ), "extend not deleted"  );
 	test.ok( !MyClass.hasOwnProperty( 'implement' ), "implement not deleted" );
 	test.ok( !MyClass.hasOwnProperty( 'neo' ), "neo not deleted" );
-	test.ok( !MyClass.hasOwnProperty( 'cleanupClassHelpers' ), "cleanupClassHelpers not deleted" );
 
 	test.done();
 };

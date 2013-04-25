@@ -57,14 +57,14 @@ There are no dependencies and the source is small, so feel free to copy the sour
 API
 ---
 
-StdClass and any derivative constructors it creates, have the following static methods that do all the magic.
+StdClass and any derivative constructors it creates/modifies, have the following static methods that do all the magic.
 
 * `extend( [ Function constructor ] )`
     * Creates a child class of the constructor it is attached to.
     * Takes an optional constructor function as an argument.
         * If no argument is given, then the parent constructor will be inherited. See the examples section if you're not sure what that means.
         * Useful when you just want to create a child with overridden methods.
-    * Copies `extend`, `implement`, `neo`, and `cleanupClassHelpers` static methods to the new child class.
+    * Copies `extend`, `implement`, and `neo` static methods to the new child class.
     * Returns the constructor it's attached to.
 * `implement( [ Object, ... ] )`
     * Add properties to the prototype of the constructor it is attached to.
@@ -78,20 +78,20 @@ StdClass and any derivative constructors it creates, have the following static m
     * Prettier when you want to immediately chain methods on a new instance or if you're using instantiation for side effects.
     * _Does_ introduce a teeeeensy bit of overhead. I mean really teensy. Statistically insignificant.
     * Returns a new instance of the constructor it's attached to.
-* `cleanupClassHelpers()`
-    * Removes `extend`, `implement`, `neo`, and itself from the constructor it is attached to.
-    * Will _only_ remove these properties if the are strictly equal to the original methods on StdClass.
-    * This name is intentionally long to stay out of the way and because it's just here for completeness sake. No overhead should be added by leaving the tools in place.
-    * This does _not_ affect the prototype, so any derivatives that have already been created will also be un-affected.
-    * Returns the constructor it _was_ attached to.
 
-StdClass also has the following static method which it _does not_ pass along to the new constructors that it creates.
+StdClass also has the following static methods which it _does not_ pass along to the constructors that it creates/modifies.
 
-* `StdClass.mixin( [ true, ] Function constructor )`
+* `StdClass.mixin( Function constructor )`
     * Takes a required constructor function argument.
-    * Attaches the `extend`, `implement`, `neo`, and `cleanupClassHelpers` static methods to constructors that were not created by StdClass.
+    * Attaches the `extend`, `implement`, and `neo` static methods to constructors that were not created by StdClass.
     * Useful for adding StdClass tools to classes that cannot directly inherit from StdClass.
-    * Also returns the constructor it's attached to, just in case you want to attach it to something else.
+    * Returns the constructor.
+* `StdClass.cleanup( Function constructor )`
+    * Removes `extend`, `implement`, and `neo` from the constructor.
+    * Will _only_ remove these properties if the are strictly equal to the original methods on StdClass.
+    * This is just here for completeness sake. No overhead should be added by leaving the tools in place.
+    * This does _not_ affect the prototype, so any derivatives that have already been created will also be un-affected.
+    * Returns the constructor.
 
 _All_ of the above methods are completely portable. You can attach any of them to any function and they will just work.
 
@@ -201,12 +201,11 @@ StdClass helper methods can be mixed-in to any class.
 
 Turn it back into a dumb class.
 
-    DumbClass.cleanupClassHelpers();
+    StdClass.cleanup( DumbClass );
 
     DumbClass.hasOwnProperty( 'extend' ); // false
     DumbClass.hasOwnProperty( 'implement' ); // false
     DumbClass.hasOwnProperty( 'neo' ); // false
-    DumbClass.hasOwnProperty( 'cleanupClassHelpers' ); // false
 
     // Awww, it's dumb again.
 
@@ -219,7 +218,7 @@ Inheriting from StdClass is completely optional and is simply an alternative to 
 
 The `neo` method also does not really create a factory pattern since the instance it returns is of the class it's statically attached to. There's nothing abstract about it, and therefore it's not a factory pattern.
 
-Just in case library status is still in doubt, `mixin` and `cleanupClassMethods` are provided so that the utility methods can be added and removed from existing classes without side effects. This makes it sort of a persistant toolkit if anything ;).
+Just in case library status is still in doubt, `StdClass.mixin` and `StdClass.cleanup` are provided so that the utility methods can be added and removed from existing classes without side effects. This makes it sort of a persistant toolkit if anything ;).
 
 I'm not against frameworks, but IoC flow can be a little hard to follow (and maintain) due to JavaScript's extremely flexible runtime object oriented features. Therefore, I prefer to constrain my use of the IoC pattern to my application logic (usually an MV* framework), rather than have layers of frameworks as dependencies.
 

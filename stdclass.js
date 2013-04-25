@@ -65,43 +65,28 @@
 
 		return instance;
 	};
-	StdClass.cleanupClassHelpers = function()
-	{
-		if ( this.extend === StdClass.extend )
-			delete this.extend;
-		if ( this.implement === StdClass.implement )
-			delete this.implement;
-		if ( this.neo === StdClass.neo )
-			delete this.neo;
-		if ( this.cleanupClassHelpers === StdClass.cleanupClassHelpers )
-			delete this.cleanupClassHelpers;
-
-		return this;
-	};
 	StdClass.mixin = function( ctor )
 	{
-		if ( !( ctor && ctor.constructor && ctor.call && ctor.apply ) )
+		if ( !StdClass.isCallable( ctor ) )
 			throw new Error( "Expecting function" );
 
-		if ( StdClass.isCallable( this.extend ) )
-			ctor.extend = this.extend;
-		else
-			ctor.extend = StdClass.extend;
+		ctor.extend = this.extend;
+		ctor.implement = this.implement;
+		ctor.neo = this.neo;
 
-		if ( StdClass.isCallable( this.implement ) )
-			ctor.implement = this.implement;
-		else
-			ctor.implement = StdClass.implement;
+		return ctor;
+	};
+	StdClass.cleanup = function( ctor )
+	{
+		if ( !StdClass.isCallable( ctor ) )
+			throw new Error( "Expecting function" );
 
-		if ( StdClass.isCallable( this.neo ) )
-			ctor.neo = this.neo;
-		else
-			ctor.neo = StdClass.neo;
-
-		if ( StdClass.isCallable( this.cleanupClassHelpers ) )
-			ctor.cleanupClassHelpers = this.cleanupClassHelpers;
-		else
-			ctor.cleanupClassHelpers = this.cleanupClassHelpers;
+		if ( ctor.extend === this.extend )
+			delete ctor.extend;
+		if ( ctor.implement === this.implement )
+			delete ctor.implement;
+		if ( ctor.neo === this.neo )
+			delete ctor.neo;
 
 		return ctor;
 	};

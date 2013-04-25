@@ -1,7 +1,7 @@
 {
   "name": "stdclass",
-  "version": "0.2.7",
-  "description": "A dead simple JavaScript inheritance implementation.",
+  "version": "0.3.0",
+  "description": "A dead simple JavaScript inheritance implementation. A tool, not a framework.",
   "main": "stdclass.js",
   "devDependencies": {
     "nodeunit": "0.8.x"

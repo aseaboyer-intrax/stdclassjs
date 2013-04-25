@@ -4,34 +4,34 @@
 
 /* BEGIN CLASS: StdClass */
 	function StdClass() {}
-	StdClass.extend = function( StdClassInstance )
+	StdClass.extend = function( Instance )
 	{
-		if ( typeof StdClassInstance === 'undefined' )
+		if ( typeof Instance === 'undefined' )
 		{
 			var SuperConstructor = this;
-			StdClassInstance = function()
+			Instance = function()
 			{
 				return SuperConstructor.apply( this, arguments );
 			};
 		}
-		else if ( !StdClass.isCallable( StdClassInstance ) )
+		else if ( !StdClass.isCallable( Instance ) )
 		{
 			throw new Error( "Expecting function" );
 		}
 
-		StdClassInstance.parent = this.prototype;
+		Instance.parent = this.prototype;
 
-		function StdClassParent() {}
-		StdClassParent.prototype = StdClassInstance.parent;
-		StdClassInstance.prototype = new StdClassParent();
-		StdClassInstance.prototype.constructor = StdClassInstance;
+		function Parent() {}
+		Parent.prototype = Instance.parent;
+		Instance.prototype = new Parent();
+		Instance.prototype.constructor = Instance;
 
 		if ( StdClass.isCallable( this.mixin ) )
-			this.mixin( StdClassInstance );
+			this.mixin( Instance );
 		else
-			StdClass.mixin( StdClassInstance );
+			StdClass.mixin( Instance );
 
-		return StdClassInstance;
+		return Instance;
 	};
 	StdClass.implement = function( /* ... */ )
 	{
@@ -56,6 +56,28 @@
 
 		return this;
 	};
+	StdClass.neo = function()
+	{
+		function Instance() {}
+		Instance.prototype = this.prototype;
+		var instance = new Instance();
+		this.apply( instance, arguments );
+
+		return instance;
+	};
+	StdClass.cleanupClassHelpers = function()
+	{
+		if ( this.extend === StdClass.extend )
+			delete this.extend;
+		if ( this.implement === StdClass.implement )
+			delete this.implement;
+		if ( this.neo === StdClass.neo )
+			delete this.neo;
+		if ( this.cleanupClassHelpers === StdClass.cleanupClassHelpers )
+			delete this.cleanupClassHelpers;
+
+		return this;
+	};
 	StdClass.mixin = function( ctor )
 	{
 		if ( !( ctor && ctor.constructor && ctor.call && ctor.apply ) )
@@ -70,6 +92,16 @@
 			ctor.implement = this.implement;
 		else
 			ctor.implement = StdClass.implement;
+
+		if ( StdClass.isCallable( this.neo ) )
+			ctor.neo = this.neo;
+		else
+			ctor.neo = StdClass.neo;
+
+		if ( StdClass.isCallable( this.cleanupClassHelpers ) )
+			ctor.cleanupClassHelpers = this.cleanupClassHelpers;
+		else
+			ctor.cleanupClassHelpers = this.cleanupClassHelpers;
 
 		return ctor;
 	};

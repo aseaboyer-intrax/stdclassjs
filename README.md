@@ -3,15 +3,27 @@ StdClassJS
 
 A dead simple JavaScript inheritance implementation.
 
-Inheritance is done exactly the same way it would be done manually so instanceof will still work and there is no speed reduction. It's all just wrapped up in some helper methods so the repetative boilerplate can be avoided.
+A tool, not a framework. Inheritance is done exactly the same way it would be done manually so instanceof will still work and there is no speed reduction. It's all just wrapped up in some helper methods so the repetative boilerplate can be avoided.
 
 It Does Not...
 --------------
 
-* Do multiple inheritance
-* Add _super/_superApply methods
-* Use Object.create or anything that is only in ECMAScript "newer than you can use" Edition.
-* Juggle
+* Do multiple inheritance.
+    * Can of worms.
+* Handle, promote, or propagate any specific means of making methods/properties private/protected.
+    * Useful constructs, but enforcement is not useful overhead. Agree to a pattern such as "_ prefixed methods are protected", and move on.
+* Add &#95;super/&#95;superApply methods.
+    * It _does_ add a static reference to the parent prototype of a constructor, but it's passive and reasonably non-invasive.
+* Wrap any methods.
+    * "What about the constructor?" __nope__
+    * "What about ..." __NO__
+    * Any wrapping of anything would create overhead and side effects. Do it yourself if you want to.
+* Break if you modify your classes outside of its pervue.
+    * Feel free to modify prototypes, attach properties willy-nilly, or extend StdClass classes any way you want. This is a _tool_, __not__ a _framework_.
+* Break instanceof or require a third-party way of checking pedigree.
+* Use Object.create or anything that is only in ECMAScript "newer than your environment supports" Edition.
+* Juggle.
+    * This was a tough decision, but in the end I had to conclude it wasn't worth the effort.
 
 You Can...
 ----------
@@ -43,27 +55,42 @@ There are no dependencies and the source is small, so feel free to copy the sour
 API
 ---
 
-StdClass has three static methods that do all the magic.
+StdClass and any derivative constructors it creates, have the following static methods that do all the magic.
 
 * `extend( [ Function constructor ] )`
     * Creates a child class that inherits from the constructor that extend is being statically called on.
     * Takes an optional constructor function as an argument.
-    * If no argument is given, then the parent constructor will be inherited.
-    * Calls mixin to copy the `extend` and `implement` static methods to the new child class.
-    * Returns the constructor.
+        * If no argument is given, then the parent constructor will be inherited. See the examples section if you're not sure what that means.
+        * Useful when you just want to create a child with overridden methods.
+    * Copies `extend`, `implement`, `neo`, and `cleanupClassHelpers` static methods to the new child class.
+    * Returns the constructor it's attached to.
 * `implement( [ Object, ... ] )`
     * Add properties to the class prototype.
     * _All_ non-null/non-undefined properties on _all_ objects passed to implement will be added to the class constructor prototype.
     * Takes 0 or more objects as arguments.
         * Passing no objects is silly, but allowed.
-    * Returns the constructor.
-* `mixin( Function constructor )`
-    * Takes a required constructor function argument.
-    * Attaches the `extend` and `implement` static methods which can then be used to extend the class.
-    * Useful for adding StdClass inheritance to classes that cannot directly inherit from StdClass.
-    * Returns the constructor.
+    * Returns the constructor it's attached to.
+* `neo( ... )`
+    * A static shortcut for `new`.
+    * `Class.neo( ... )` is equivalent to `new Class( ... )`.
+    * Prettier when you want to immediately chain methods on a new instance or if you're using instantiation for side effects.
+    * _Does_ introduce a teeeeensy bit of overhead. I mean really teensy. Statistically insignificant.
+    * Returns a new instance of the constructor it's attached to.
+* `cleanupClassHelpers()`
+    * Removes `extend`, `implement`, `neo`, and itself from the class.
+    * This name intentionally left long to stay out of the way and because it's just here for completeness sake and I don't expect many people to use it.
+    * This does _not_ affect the prototype, so any derivatives that have already been created will also be un-affected.
+    * Returns the constructor it _was_ attached to.
 
-The `mixin` method is _not_ copied by either `mixin` or `extend`; however, it can be manually copied should you want to extend the functionality of StdClass itself.
+StdClass also has the following static method which it _does not_ pass along to the new constructors that it creates.
+
+* `StdClass.mixin( [ true, ] Function constructor )`
+    * Takes a required constructor function argument.
+    * Attaches the `extend`, `implement`, `neo`, and `cleanupClassHelpers` static methods to constructors that were not created by StdClass.
+    * Useful for adding StdClass inheritance to classes that cannot directly inherit from StdClass.
+    * Also returns the constructor it's attached to, just in case you want to attach it to something else.
+
+_All_ of the above methods are completely portable. You can attach any of them to any function and they will just work.
 
 A reference to the parent class prototype is also statically attached to child constructors for convenience.
 
@@ -79,7 +106,8 @@ The `parent` property also allows for a universally accessible inheritance chain
 Examples
 --------
 
-    // Parent class
+Parent Class
+
     var MyParent = StdClass.extend( function( args, go, here )
     {
         // Do parent constructor stuff
@@ -91,7 +119,8 @@ Examples
         }
     });
 
-    // Child class
+Child Class
+
     var MyChild = MyParent.extend( function( args, go, here, too )
     {
         // Call the parent constructor
@@ -128,10 +157,20 @@ Examples
         }
     });
 
-    // No explicit constructor means inherit the parent constructor.
+No explicit constructor means inherit the parent constructor.
+
+_Inheriting a constructor means automatically creating a constructor function that does nothing except call the parent constructor, passing through all arguments._
+
     var InheritedConstructor = MyChild.extend();
 
-    // implement with multiple arguments
+    // Which is the same as...
+    var Equivalent = MyChild.extend( function()
+    {
+        return Equivalent.parent.constructor.apply( this, arguments );
+    });
+
+Implement can be passed multiple arguments.
+
     InheritedConstructor.implement(
         {
             foo: 'foo', // Replaced below
@@ -142,6 +181,8 @@ Examples
             bar: null // Does not replace above 'bar' value
         }
     )
+
+StdClass helper methods can be mixed-in to any class.
 
     var DumbClass = function()
     {
@@ -154,6 +195,16 @@ Examples
 
     // Woot!
     var NotSoDumbClass = DumbClass.extend();
+
+Turn it back into a dumb class.
+
+    NotSoDumbClass.cleanupClassHelpers();
+
+    NotSoDumbClass.hasOwnProperty( 'extend' ); // false
+    NotSoDumbClass.hasOwnProperty( 'implement' ); // false
+    NotSoDumbClass.hasOwnProperty( 'neo' ); // false
+    NotSoDumbClass.hasOwnProperty( 'cleanupClassHelpers' ); // false
+    // Awww, it's dumb again.
 
 License
 -------

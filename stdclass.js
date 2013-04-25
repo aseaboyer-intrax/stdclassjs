@@ -2,6 +2,11 @@
 {
 	"use strict";
 
+	function isCallable( thing )
+	{
+		return !!( thing && thing.constructor && thing.call && thing.apply );
+	}
+
 /* BEGIN CLASS: StdClass */
 	function StdClass() {}
 	StdClass.extend = function( ctor )
@@ -14,17 +19,19 @@
 				return SuperConstructor.apply( this, arguments );
 			};
 		}
-		else if ( !( ctor && ctor.constructor && ctor.call && ctor.apply ) )
+		else if ( !isCallable( ctor ) )
 		{
 			throw new Error( "Expecting function" );
 		}
 
+		ctor.parent = this.prototype;
+
 		function Super() {}
-		Super.prototype = this.prototype;
+		Super.prototype = ctor.parent;
 		ctor.prototype = new Super();
 		ctor.prototype.constructor = ctor;
 
-		if ( !!( this.mixin && this.mixin.constructor && this.mixin.call && this.mixin.apply ) )
+		if ( isCallable( this.mixin ) )
 			this.mixin( ctor );
 		else
 			StdClass.mixin( ctor );
@@ -59,25 +66,29 @@
 		if ( !( ctor && ctor.constructor && ctor.call && ctor.apply ) )
 			throw new Error( "Expecting function" );
 
-		if ( !!( this.extend && this.extend.constructor && this.extend.call && this.extend.apply ) )
+		if ( isCallable( this.extend ) )
 			ctor.extend = this.extend;
 		else
 			ctor.extend = StdClass.extend;
 
-		if ( !!( this.implement && this.implement.constructor && this.implement.call && this.implement.apply ) )
+		if ( isCallable( this.implement ) )
 			ctor.implement = this.implement;
 		else
 			ctor.implement = StdClass.implement;
 
 		return ctor;
 	};
+	StdClass.prototype.toString = function()
+	{
+		return "[object StdClass]";
+	};
 /* END CLASS: StdClass */
 
 	if ( typeof module !== 'undefined' )
 		module.exports = StdClass;
-	else if ( typeof global !== 'undefied' )
+	else if ( typeof global !== 'undefined' )
 		global.StdClass = StdClass;
-	else if ( typeof window !== 'undefied' )
+	else if ( typeof window !== 'undefined' )
 		window.StdClass = StdClass;
 	else
 		return StdClass;

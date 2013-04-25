@@ -65,6 +65,14 @@ StdClass has three static methods that do all the magic.
 
 The `mixin` method is _not_ copied by either `mixin` or `extend`; however, it can be manually copied should you want to extend the functionality of StdClass itself.
 
+A reference to the parent class prototype is also statically attached for convenience so that you can reference parent methods without refering to the parent by name. This helps avoid refactoring if your parent class changes or is renamed.
+
+* `parent`
+    * `Child.parent === Parent.prototype`
+    * This is a shortcut allowing access to the parent class prototype object without referencing the parent class by name.
+
+You can of course still use the parent class name if you prefer.
+
 Examples
 --------
 
@@ -84,7 +92,15 @@ Examples
     var MyChild = MyParent.extend( function( args, go, here, too )
     {
         // Call the parent constructor
-        MyParent.call( this, args, go, here );
+        MyChild.parent.constructor.call( this, args, go, here );
+
+        // The above is equivalent the following, but has the advantage of
+        // not using the parent name. This can save time refactoring should the
+        // parent class change or be renamed.
+        //
+        // MyParent.prototype.constructor.call( this, args, go, here );
+        //   OR
+        // MyParent.call( this, args, go, here );
 
         // Do child constructor stuff
         this.too = too;
@@ -93,7 +109,12 @@ Examples
         instanceMethod: function( and, here, too )
         {
             // Call the parent method
-            MyParent.prototype.instanceMethod.call( this, and, here );
+            MyChild.parent.instanceMethod.call( this, and, here );
+
+            // Once again, the above is equivalent to the following except that
+            // you don't need to use the parent class name.
+            //
+            // MyParent.prototype.instanceMethod.call( this, and, here );
 
             // Do child method stuff
             this.too = too;

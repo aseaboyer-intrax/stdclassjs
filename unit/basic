@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 "use strict";
 
 var StdClass = require( '../stdclass.js' );
@@ -225,6 +226,48 @@ exports.mixin_extend = function( test )
 
 	test.ok( instance instanceof MyClass, "child class not an instance of parent" );
 	test.ok( !( instance instanceof StdClass ), "mixin should not make child class an instance of StdClass" );
+
+	test.done();
+};
+
+exports.parent = function( test )
+{
+	test.expect( 4 );
+
+	var MyClass = StdClass.extend( function()
+	{
+		this.MyClass_success = true;
+	})
+	.implement({
+		foo: function( test )
+		{
+			return test.toUpperCase();
+		}
+	});
+
+	var MyChildClass = MyClass.extend( function()
+	{
+		MyChildClass.parent.constructor.call( this );
+		this.MyChildClass_success = true;
+	})
+	.implement({
+		foo: function( test )
+		{
+			return MyChildClass.parent.foo.call( this, test ) + test;
+		}
+	});
+
+	var instance;
+	test.doesNotThrow( function()
+	{
+		instance = new MyChildClass();
+		test.ok( instance.MyClass_success === true && instance.MyChildClass_success === true, "parent constructor not run correctly" );
+	});
+
+	test.doesNotThrow( function()
+	{
+		test.ok( instance.foo( 'bar' ) === 'BARbar', "super method return mangled" );
+	}, Error, "error calling super method" );
 
 	test.done();
 };

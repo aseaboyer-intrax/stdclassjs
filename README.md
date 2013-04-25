@@ -197,16 +197,17 @@ StdClass helper methods can be mixed-in to any class.
     StdClass.mixin( DumbClass );
 
     // Woot!
-    var NotSoDumbClass = DumbClass.extend();
+    var Extended = DumbClass.extend();
 
 Turn it back into a dumb class.
 
-    NotSoDumbClass.cleanupClassHelpers();
+    DumbClass.cleanupClassHelpers();
 
-    NotSoDumbClass.hasOwnProperty( 'extend' ); // false
-    NotSoDumbClass.hasOwnProperty( 'implement' ); // false
-    NotSoDumbClass.hasOwnProperty( 'neo' ); // false
-    NotSoDumbClass.hasOwnProperty( 'cleanupClassHelpers' ); // false
+    DumbClass.hasOwnProperty( 'extend' ); // false
+    DumbClass.hasOwnProperty( 'implement' ); // false
+    DumbClass.hasOwnProperty( 'neo' ); // false
+    DumbClass.hasOwnProperty( 'cleanupClassHelpers' ); // false
+
     // Awww, it's dumb again.
 
 Notes

@@ -3,7 +3,9 @@ StdClassJS
 
 A dead simple JavaScript inheritance implementation.
 
-A tool, not a framework. Inheritance is done exactly the same way it would be done manually so instanceof will still work and there is no speed reduction. It's all just wrapped up in some helper methods so the repetative boilerplate can be avoided.
+Inheritance is done exactly the same way it would be done manually so instanceof will still work and there is no speed reduction. It's all just wrapped up in some helper methods so the repetative boilerplate can be avoided.
+
+This is a _library_, even though it looks a little like a _framework_. See the "Notes" section for more information.
 
 It Does Not...
 --------------
@@ -19,7 +21,7 @@ It Does Not...
     * "What about ..." __NO__
     * Any wrapping of anything would create overhead and side effects. Do it yourself if you want to.
 * Break if you modify your classes outside of its pervue.
-    * Feel free to modify prototypes, attach properties willy-nilly, or extend StdClass classes any way you want. This is a _tool_, __not__ a _framework_.
+    * Feel free to modify prototypes, attach properties willy-nilly, or extend StdClass classes any way you want.
 * Break instanceof or require a third-party way of checking pedigree.
 * Use Object.create or anything that is only in ECMAScript "newer than your environment supports" Edition.
 * Juggle.
@@ -205,6 +207,19 @@ Turn it back into a dumb class.
     NotSoDumbClass.hasOwnProperty( 'neo' ); // false
     NotSoDumbClass.hasOwnProperty( 'cleanupClassHelpers' ); // false
     // Awww, it's dumb again.
+
+Notes
+-----
+
+The hallmark of a framework is Inversion of Control. It _looks_ like there's some IoC going on because of the StdClass base class, and what seems like a factory pattern in the `neo` method. But it only seems that way at first glance.
+
+Inheriting from StdClass is completely optional and is simply an alternative to the `StdClass.mixin` method. StdClass is not a template or abstract class, and therefore does not use any dependency injection. In fact, it does not have any instance methods at all.
+
+The `neo` method also does not really create a factory pattern since the instance it returns is of the class it's statically attached to. AKA: `neo` returns a concrete class, never a derivative. This can get very confusing very fast, but the bottom line is there's nothing abstract about it, and therefore it's not a factory pattern.
+
+Just in case library status is still in doubt, `mixin` and `cleanupClassMethods` are provided so that the utility methods can be added and removed from existing classes without side effects. This makes it sort of a persistant toolkit if anything ;).
+
+I'm not against frameworks, but IoC flow can be a little hard to follow (and maintain) due to JavaScript's extremely flexible runtime object oriented features. Therefore, I prefer to constrain my use of the IoC pattern to my application logic (usually an MV* framework), rather than have layers of frameworks as dependencies.
 
 License
 -------

@@ -24,6 +24,8 @@ It Does Not...
     * Feel free to modify prototypes, attach properties willy-nilly, or extend StdClass classes any way you want.
 * Break instanceof or require a third-party way of checking pedigree.
 * Use Object.create or anything that is only in ECMAScript "newer than your environment supports" Edition.
+* Use any reserved words.
+* Use any deprecated ECMAScript features.
 * Juggle.
     * This was a tough decision, but in the end I had to conclude it wasn't worth the effort.
 

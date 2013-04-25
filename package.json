@@ -1,6 +1,6 @@
 {
   "name": "stdclass",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "A dead simple JavaScript inheritance implementation. A tool, not a framework.",
   "main": "stdclass.js",
   "devDependencies": {

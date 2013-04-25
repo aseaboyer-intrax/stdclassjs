@@ -65,13 +65,12 @@ StdClass has three static methods that do all the magic.
 
 The `mixin` method is _not_ copied by either `mixin` or `extend`; however, it can be manually copied should you want to extend the functionality of StdClass itself.
 
-A reference to the parent class prototype is also statically attached for convenience so that you can reference parent methods without refering to the parent by name. This helps avoid refactoring if your parent class changes or is renamed.
+A reference to the parent class prototype is also statically attached to child constructors for convenience.
 
 * `parent`
     * `Child.parent === Parent.prototype`
-    * This is a shortcut allowing access to the parent class prototype object without referencing the parent class by name.
 
-You can of course still use the parent class name if you prefer.
+This allows parent methods to be referenced without referring to the parent by name which helps avoid refactoring if your parent class changes or is renamed. You can of course still use the parent class name if you prefer.
 
 Examples
 --------

@@ -72,6 +72,8 @@ A reference to the parent class prototype is also statically attached to child c
 
 This allows parent methods to be referenced without referring to the parent by name which helps avoid refactoring if your parent class changes or is renamed. You can of course still use the parent class name if you prefer.
 
+The `parent` property also allows for an inheritance chain via `constructor.parent.constructor.parent ...`.
+
 Examples
 --------
 

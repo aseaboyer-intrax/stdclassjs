@@ -2,41 +2,36 @@
 {
 	"use strict";
 
-	function isCallable( thing )
-	{
-		return !!( thing && thing.constructor && thing.call && thing.apply );
-	}
-
 /* BEGIN CLASS: StdClass */
 	function StdClass() {}
-	StdClass.extend = function( ctor )
+	StdClass.extend = function( StdClassInstance )
 	{
-		if ( typeof ctor === 'undefined' )
+		if ( typeof StdClassInstance === 'undefined' )
 		{
 			var SuperConstructor = this;
-			ctor = function()
+			StdClassInstance = function()
 			{
 				return SuperConstructor.apply( this, arguments );
 			};
 		}
-		else if ( !isCallable( ctor ) )
+		else if ( !StdClass.isCallable( StdClassInstance ) )
 		{
 			throw new Error( "Expecting function" );
 		}
 
-		ctor.parent = this.prototype;
+		StdClassInstance.parent = this.prototype;
 
-		function Super() {}
-		Super.prototype = ctor.parent;
-		ctor.prototype = new Super();
-		ctor.prototype.constructor = ctor;
+		function StdClassParent() {}
+		StdClassParent.prototype = StdClassInstance.parent;
+		StdClassInstance.prototype = new StdClassParent();
+		StdClassInstance.prototype.constructor = StdClassInstance;
 
-		if ( isCallable( this.mixin ) )
-			this.mixin( ctor );
+		if ( StdClass.isCallable( this.mixin ) )
+			this.mixin( StdClassInstance );
 		else
-			StdClass.mixin( ctor );
+			StdClass.mixin( StdClassInstance );
 
-		return ctor;
+		return StdClassInstance;
 	};
 	StdClass.implement = function( /* ... */ )
 	{
@@ -66,17 +61,21 @@
 		if ( !( ctor && ctor.constructor && ctor.call && ctor.apply ) )
 			throw new Error( "Expecting function" );
 
-		if ( isCallable( this.extend ) )
+		if ( StdClass.isCallable( this.extend ) )
 			ctor.extend = this.extend;
 		else
 			ctor.extend = StdClass.extend;
 
-		if ( isCallable( this.implement ) )
+		if ( StdClass.isCallable( this.implement ) )
 			ctor.implement = this.implement;
 		else
 			ctor.implement = StdClass.implement;
 
 		return ctor;
+	};
+	StdClass.isCallable = function( thing )
+	{
+		return !!( thing && thing.constructor && thing.call && thing.apply );
 	};
 	StdClass.prototype.toString = function()
 	{

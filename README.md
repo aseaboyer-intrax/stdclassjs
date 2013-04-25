@@ -212,6 +212,8 @@ Turn it back into a dumb class.
 Notes
 -----
 
+### Library, Not Framework
+
 The hallmark of a framework is Inversion of Control. It _looks_ like there's some IoC going on because of the StdClass base class, and what seems like a factory pattern in the `neo` method. But it only seems that way at first glance.
 
 Inheriting from StdClass is completely optional and is simply an alternative to the `StdClass.mixin` method. StdClass is not a template or abstract class, and therefore does not use any dependency injection. In fact, it does not have any instance methods at all.

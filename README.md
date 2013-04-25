@@ -38,7 +38,7 @@ _Require It_
 
 ### Use It Inline
 
-Feel free to copy the source between `/* BEGIN CLASS: StdClass */` and `/* END CLASS: StdClass */` into your own project. Remember to include the license.
+There are no dependencies and the source is small, so feel free to copy the source into your own project adding a seperate file seems cumbersome. Remember to include the license. I recommend just grabbing the source between `/* BEGIN CLASS: StdClass */` and `/* END CLASS: StdClass */`.
 
 API
 ---

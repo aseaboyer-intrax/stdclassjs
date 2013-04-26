@@ -258,13 +258,17 @@ I decided to add it because it requires no maintanence. Once it's set, it doesn'
 
 ### Multiple Inheritance
 
-JavaScript does not support it. Mixins are not it. It's a prototype chain, not a prototype tree or graph. Here is why it's not true.
+JavaScript does not support it. Mixins are not it. It's a prototype chain, not a prototype tree or graph.
+
+If someone tells you that JavaScript supports it, here is why they are wrong:
 
 `C` instanceof `A` __and__ `C` instanceof `B`
 
 __therefore__
 
 `A` instanceof `B` __or__ `B` instanceof `A`
+
+If someone still insists that multiple inheritance is possible and that the above is just an `instanceof` operator limitation, then have them setup a scenario where a change to `A.prototype` _cannot_ affect `B.prototype`, and a change to `B.prototype` _cannot_ affect `A.prototype`, but a modification to either _can_ affect `C.prototype`.
 
 License
 -------

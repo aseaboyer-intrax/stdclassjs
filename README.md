@@ -104,7 +104,7 @@ A reference to the parent class prototype is also statically attached to child c
 
 This quite literally (in the literal sense) does not add any extra overhead. Not even in the `extend` method.
 
-Having a reference to the parent prototype on the child constructor, allows parent methods to be referenced without referring to the parent by name. That's a good thing if you're parent class changes or is renamed because you won't have to refactor your child classes. You can of course still use the parent class name if you prefer.
+Having a reference to the parent prototype on the child constructor, allows parent methods to be referenced without referring to the parent by name. That's a good thing if your parent class changes or is renamed, because you won't have to refactor your child classes. You can of course still use the parent class name if you prefer.
 
 The `parent` property also allows for a universally accessible inheritance chain like this.
 

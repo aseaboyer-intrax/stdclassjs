@@ -24,8 +24,8 @@ It Does Not...
     * Feel free to modify prototypes, attach properties willy-nilly, or extend StdClass classes any way you want.
 * Break instanceof or require a third-party way of checking pedigree.
 * Use Object.create or anything that is only in ECMAScript "newer than your environment supports" Edition.
-* Use any reserved words.
 * Use any deprecated ECMAScript features.
+* Use any reserved words.
 * Juggle.
     * This was a tough decision, but in the end I had to conclude it wasn't worth the effort.
 
@@ -102,11 +102,15 @@ A reference to the parent class prototype is also statically attached to child c
 * `parent`
     * `Child.parent === Parent.prototype`
 
-This allows parent methods to be referenced without referring to the parent by name which helps avoid refactoring if your parent class changes or is renamed. You can of course still use the parent class name if you prefer.
+This quite literally (in the literal sense) does not add any extra overhead. Not even in the `extend` method.
+
+Having a reference to the parent prototype on the child constructor, allows parent methods to be referenced without referring to the parent by name. That's a good thing if you're parent class changes or is renamed because you won't have to refactor your child classes. You can of course still use the parent class name if you prefer.
 
 The `parent` property also allows for a universally accessible inheritance chain like this.
 
     constructor.parent.constructor.parent.constructor.parent ...
+
+See the "Notes" section about why that's noteworthy.
 
 Examples
 --------
@@ -225,6 +229,30 @@ The `neo` method also does not really create a factory pattern since the instanc
 Just in case library status is still in doubt, `StdClass.mixin` and `StdClass.cleanup` are provided so that the utility methods can be added and removed from existing classes without side effects. This makes it sort of a persistant toolkit if anything ;).
 
 I'm not against frameworks, but IoC flow can be a little hard to follow (and maintain) due to JavaScript's extremely flexible runtime object oriented features. Therefore, I prefer to constrain my use of the IoC pattern to my application logic (usually an MV* framework), rather than have layers of frameworks as dependencies.
+
+### Prototype Chain
+
+The `extend` method adds a `parent` property to child constructors which is a reference to the parent's prototype object. Useful when calling parent methods, but there's another useful side effect.
+
+You would think since there _is_ a prototype chain, traversing it to get parent class prototypes and constructors would already be possible in all JavaScript environments. You would be wrong if you thought so and you will probably end up going in loops if you try to walk that chain.
+
+Given a class `Class`, the following approaches _will not work!_
+
+    Class.prototype.constructor.prototype; // loop
+    Class.prototype.prototype; // undefined - Only functions have prototypes.
+    Class.constructor; // You just found the function constructor, Function.
+
+As you might guess given the above, your chances don't get any better with an instance.
+
+    var instance = new Class();
+    instance.constructor; // You just got back to Class. See above.
+    instance.prototype; // undefined - Only functions have prototypes.
+
+Some environments _do_ expose the _real_ prototype chain in a property named `__proto__` or similar, but this is not a universal feature.
+
+I debated with myself long and hard (that's what she said) about whether to have `extend` add the `parent` property. On the one hand, it's _sort of_ adding a feature to the language that would not normally exist. That's something I wanted to avoid like adding `_super` methods or multiple inheritance. On the other hand, it's a property containing a reference. No functions required, no overhead incurred, no relying on emergent behavior not explicitly stated in the language specification.
+
+I decided to add it because it requires no maintanence. Once it's set, it doesn't need to be updated on class instantiation, when a member function is called, and if you extend the class without using `extend`, it will simply not exist on the child constructor rather than existing incorrectly.
 
 License
 -------

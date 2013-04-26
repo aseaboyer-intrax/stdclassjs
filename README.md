@@ -12,6 +12,8 @@ It Does Not...
 
 * Do multiple inheritance.
     * Can of worms.
+    * This library is designed to make it easier to use existing language features, not add new ones.
+    * See the "Notes" section if you think JavaScript _does_ support multiple inheritance.
 * Handle, promote, or propagate any specific means of making methods/properties private/protected.
     * Useful constructs, but enforcement is not useful overhead. Agree to a pattern such as "_ prefixed methods are protected", and move on.
 * Add &#95;super/&#95;superApply methods.
@@ -253,6 +255,16 @@ Some environments _do_ expose the _real_ prototype chain in a property named `__
 I debated with myself long and hard (that's what she said) about whether to have `extend` add the `parent` property. On the one hand, it's _sort of_ adding a feature to the language that would not normally exist. That's something I wanted to avoid like adding `_super` methods or multiple inheritance. On the other hand, it's a property containing a reference. No functions required, no overhead incurred, no relying on emergent behavior not explicitly stated in the language specification.
 
 I decided to add it because it requires no maintanence. Once it's set, it doesn't need to be updated on class instantiation, when a member function is called, and if you extend the class without using `extend`, it will simply not exist on the child constructor rather than existing incorrectly.
+
+### Multiple Inheritance
+
+JavaScript does not support it. Mixins are not it. It's a prototype chain, not a prototype tree or graph. Here is why it's not true.
+
+`C` instanceof `A` __and__ `C` instanceof `B`
+
+__therefore__
+
+`A` instanceof `B` __or__ `B` instanceof `A`
 
 License
 -------

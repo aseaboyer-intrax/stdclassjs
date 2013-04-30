@@ -69,7 +69,7 @@ StdClass and any derivative constructors it creates/modifies, have the following
         * If no argument is given, then the parent constructor will be inherited. See the examples section if you're not sure what that means.
         * Useful when you just want to create a child with overridden methods.
     * Copies `extend`, `implement`, and `neo` static methods to the new child class.
-    * Returns the constructor it's attached to.
+    * Returns `constructor`, or if the constructor argument is omitted, it returns a new _inherited_ constructor.
 * `implement( [ Object, ... ] )`
     * Add properties to the prototype of the constructor it is attached to.
     * _All_ non-null/non-undefined properties on _all_ objects passed to implement will be added to the class constructor prototype.
@@ -216,6 +216,13 @@ Turn it back into a dumb class.
     DumbClass.hasOwnProperty( 'neo' ); // false
 
     // Awww, it's dumb again.
+
+How about making it just a little smart? Remember, the StdClass static methods are portable. You can attach them to any constructor and they work.
+
+    DumbClass.extend = StdClass.extend;
+    
+    // Well isn't he just a chip off the ol' block.
+    var SonOfDumbClass = DumbClass.extend();
 
 Notes
 -----

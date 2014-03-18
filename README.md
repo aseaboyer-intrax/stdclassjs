@@ -152,7 +152,7 @@ Child Class
         instanceMethod: function( and, here, too )
         {
             // Call the parent method
-            MyChild.parent.instanceMethod.call( this, and, here );
+            MyChild.parent.prototype.instanceMethod.call( this, and, here );
 
             // Once again, the above is equivalent to the following except that
             // you don't need to use the parent class name.
